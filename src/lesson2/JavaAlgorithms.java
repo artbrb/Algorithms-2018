@@ -97,8 +97,40 @@ public class JavaAlgorithms {
      * вернуть ту из них, которая встречается раньше в строке first.
      */
     static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+        int fisLength = firs.length();
+        int secondLength = second.length();
+        char[][] matrix = new char[fisLength + 1][secondLength + 1];
+        StringBuilder maxString = new StringBuilder();
+
+
+        for (int i = 1; i < fisLength + 1; i++) {
+            matrix[i][0] = firs.charAt(i - 1);
+        }
+        for (int j = 1; j < secondLength + 1; j++) {
+            matrix[0][j] = second.charAt(j - 1);
+        }
+
+        for (int i = 1; i < fisLength + 1; i++) {
+            for (int j = 1; j < secondLength + 1; j++) {
+                StringBuilder currentString = new StringBuilder();
+                int x = i;
+                int y = j;
+                if (matrix[i][0] == matrix[0][j]) {
+                    while (x + 1 <= fisLength + 1 && y + 1 <= secondLength + 1 && matrix[x][0] == matrix[0][y]) {
+                        currentString.append(matrix[x][0]);
+                        x++;
+                        y++;
+                    }
+                }
+                if (currentString.length() > maxString.length()) maxString = currentString;
+            }
+        }
+        return maxString.toString();
     }
+
+    //Трудоёмкость:    O(n * m)
+    //Ресурсоёмкость:  O(n * m)
+    //m, n - длины входных слов
 
     /**
      * Число простых чисел в интервале
@@ -111,8 +143,25 @@ public class JavaAlgorithms {
      * Единица простым числом не считается.
      */
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        if (limit <= 0) {
+            return 0;
+        } else {
+            int primesNumber = limit - 1;
+            for (int k = 2; k <= limit; k++) {
+                for (int i = 2; i <= Math.sqrt(k); i++) {
+                    if (k % i == 0) {
+                        primesNumber--;
+                        break;
+                    }
+                }
+            }
+            return primesNumber;
+        }
     }
+
+    //Трудоёмкость:    O(n * sqrt(n))
+    //Ресурсоёмкость:  O(1)
+    //n - limit
 
     /**
      * Балда

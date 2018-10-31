@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Tag
 import kotlin.test.Test
 
+
 class TaskTestsJava : AbstractTaskTests() {
 
     @Test

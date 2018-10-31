@@ -2,6 +2,10 @@ package lesson1;
 
 import kotlin.NotImplementedError;
 
+import java.io.*;
+import java.util.*;
+
+
 @SuppressWarnings("unused")
 public class JavaTasks {
     /**
@@ -32,9 +36,29 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortTimes(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTimes(String inputName, String outputName) throws IOException {
+        FileWriter writer = new FileWriter(new File(outputName));
+        List<String> stringList = new ArrayList<>();
+        String string;
+        BufferedReader reader = new BufferedReader(new FileReader(inputName));
+        while ((string = reader.readLine()) != null) {
+            if (string.matches("[012][0-9]:[0-9]{2}:[0-9]{2}")) {
+                stringList.add(string);
+            } else
+                throw new IllegalArgumentException("Invalid data format");
+        }
+        reader.close();
+        Collections.sort(stringList);
+
+        for (String time: stringList) {
+            writer.write(time + "\n");
+        }
+        writer.close();
     }
+
+    //Трудоёмкость:   O(n * log(n))
+    //Ресурсоёмкость: O(n)
+    //n - количество строк в входном файле
 
     /**
      * Сортировка адресов
@@ -97,8 +121,28 @@ public class JavaTasks {
      * 121.3
      */
     static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+        try {
+            Double d;
+            String string;
+            BufferedReader reader = new BufferedReader(new FileReader(inputName));
+            List<Double> list = new ArrayList<>();
+            while((string = reader.readLine())!= null) {
+                list.add(Double.valueOf(string));
+            }
+            Collections.sort(list);
+            FileWriter writer = new FileWriter(new File(outputName));
+            for (Double element: list) {
+                writer.write(element.toString() + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    //Трудоёмкость:   O(n * log(n))
+    //Ресурсоёмкость: O(n)
+    //n - количество строк в входном файле
 
     /**
      * Сортировка последовательности
