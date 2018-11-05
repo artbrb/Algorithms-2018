@@ -207,16 +207,17 @@ public class JavaAlgorithms {
             rows++;
             list.addAll(Arrays.asList(splitArray));
         }
-        String[][] matrix = new String[rows][columns];
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++){
-                matrix[row][column] = list.get(row*column + column);
+        String[][] matrix = new String[rows + 1][columns + 1];
+        for (int row = 0; row <= rows; row++) {
+            for (int column = 0; column <= columns; column++){
+                matrix[row][column] = list.get(row * columns + column);
             }
         }
+        Integer tt = matrix.length;
 
         for (String word: words) {
-            for (int row = 0; row < rows; row++) {
-                for (int column = 0; column < columns; column++) {
+            for (int row = 0; row <= rows; row++) {
+                for (int column = 0; column <= columns; column++) {
                     if (String.valueOf(word.charAt(0)).equals(matrix[row][column])) {
                         count = 0;
                         wordsSearch(finalResult, passedCoordinates, matrix, word, row, column, count, rows, columns);
@@ -233,8 +234,8 @@ public class JavaAlgorithms {
 
         Pair<Integer, Integer> rightPair = new Pair<>(row, column + 1);
         Pair<Integer, Integer> leftPair = new Pair<>(row, column - 1);
-        Pair<Integer, Integer> upPair = new Pair<>(row + 1, column);
-        Pair<Integer, Integer> downPair = new Pair<>(row - 1, column);
+        Pair<Integer, Integer> upPair = new Pair<>(row - 1, column);
+        Pair<Integer, Integer> downPair = new Pair<>(row + 1, column);
 
         if (word.length() - 1 != count) {
 
@@ -263,7 +264,7 @@ public class JavaAlgorithms {
             }
 
             if (checkOutOfIndex(row + 1, column, rows, columns) &&
-                    matrix[row][column + 1].equals(String.valueOf(word.charAt(count + 1))) &&
+                    matrix[row + 1][column].equals(String.valueOf(word.charAt(count + 1))) &&
                     !passedCoordinates.contains(downPair)) {
                 count++;
                 passedCoordinates.add(downPair);
@@ -275,6 +276,6 @@ public class JavaAlgorithms {
     }
 
     private static boolean checkOutOfIndex(int row, int column, int rows, int columns) {
-        return row <= rows - 1 && row > 0 && column <= columns - 1 && column > 0;
+        return row < rows && row >= 0 && column < columns && column >= 0;
     }
 }

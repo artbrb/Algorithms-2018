@@ -78,6 +78,8 @@ abstract class AbstractAlgorithmsTests {
         assertEquals("инбург", longestCommonSubstring("екатеринбург", "катеминбург"))
         assertEquals("зд", longestCommonSubstring("здравствуй мир", "мы здесь"))
         assertEquals("СЕРВАТОР", longestCommonSubstring("ОБСЕРВАТОРИЯ", "КОНСЕРВАТОРЫ"))
+        assertEquals("РОССИЯ", longestCommonSubstring("РОССИЯ", "НОВОРОССИЯ"))
+        assertEquals("ЗЕЛАНДИЯ", longestCommonSubstring("ОБСЕРЗЕЛАНДИЯВАТОРИЯ", "КОНСЕРВАТОРЫЗЕЛАНДИЯ"))
         assertEquals("огда ", longestCommonSubstring(
                 """
 Мой дядя самых честных правил,
