@@ -3,7 +3,10 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
-import java.util.Set;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
@@ -99,15 +102,14 @@ public class JavaAlgorithms {
     static public String longestCommonSubstring(String firs, String second) {
         int fisLength = firs.length();
         int secondLength = second.length();
-        char[][] matrix = new char[fisLength + 1][secondLength + 1];
+        char[][] wordsMatrix = new char[fisLength + 1][secondLength + 1];
         StringBuilder maxString = new StringBuilder();
 
-
         for (int i = 1; i < fisLength + 1; i++) {
-            matrix[i][0] = firs.charAt(i - 1);
+            wordsMatrix[i][0] = firs.charAt(i - 1);
         }
         for (int j = 1; j < secondLength + 1; j++) {
-            matrix[0][j] = second.charAt(j - 1);
+            wordsMatrix[0][j] = second.charAt(j - 1);
         }
 
         for (int i = 1; i < fisLength + 1; i++) {
@@ -115,9 +117,9 @@ public class JavaAlgorithms {
                 StringBuilder currentString = new StringBuilder();
                 int x = i;
                 int y = j;
-                if (matrix[i][0] == matrix[0][j]) {
-                    while (x + 1 <= fisLength + 1 && y + 1 <= secondLength + 1 && matrix[x][0] == matrix[0][y]) {
-                        currentString.append(matrix[x][0]);
+                if (wordsMatrix[i][0] == wordsMatrix[0][j]) {
+                    while (x + 1 <= fisLength + 1 && y + 1 <= secondLength + 1 && wordsMatrix[x][0] == wordsMatrix[0][y]) {
+                        currentString.append(wordsMatrix[x][0]);
                         x++;
                         y++;
                     }
@@ -189,7 +191,90 @@ public class JavaAlgorithms {
      * В файле буквы разделены пробелами, строки -- переносами строк.
      * Остальные символы ни в файле, ни в словах не допускаются.
      */
-    static public Set<String> baldaSearcher(String inputName, Set<String> words) {
-        throw new NotImplementedError();
+    static public Set<String> baldaSearcher(String inputName, Set<String> words) throws IOException {
+        String s;
+        Integer rows = -1;
+        Integer count = 0;
+        Integer columns = 0;
+        List<String> list = new ArrayList<>();
+        Set<String> finalResult = new HashSet<>();
+        Set<Pair<Integer, Integer>> passedCoordinates = new HashSet<>();
+        BufferedReader reader = new BufferedReader(new FileReader(inputName));
+
+        while ((s = reader.readLine()) != null) {
+            String[] splitArray = s.split(" ");
+            columns = splitArray.length - 1;
+            rows++;
+            list.addAll(Arrays.asList(splitArray));
+        }
+        String[][] matrix = new String[rows][columns];
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++){
+                matrix[row][column] = list.get(row*column + column);
+            }
+        }
+
+        for (String word: words) {
+            for (int row = 0; row < rows; row++) {
+                for (int column = 0; column < columns; column++) {
+                    if (String.valueOf(word.charAt(0)).equals(matrix[row][column])) {
+                        count = 0;
+                        wordsSearch(finalResult, passedCoordinates, matrix, word, row, column, count, rows, columns);
+                    }
+                }
+            }
+        }
+        return finalResult;
+
+    }
+
+    private static void wordsSearch(Set<String> finalResult, Set<Pair<Integer, Integer>> passedCoordinates,
+                                    String[][] matrix, String word,int row,int column,int count,int rows,int columns){
+
+        Pair<Integer, Integer> rightPair = new Pair<>(row, column + 1);
+        Pair<Integer, Integer> leftPair = new Pair<>(row, column - 1);
+        Pair<Integer, Integer> upPair = new Pair<>(row + 1, column);
+        Pair<Integer, Integer> downPair = new Pair<>(row - 1, column);
+
+        if (word.length() - 1 != count) {
+
+            if (checkOutOfIndex(row, column + 1, rows, columns) &&
+                    matrix[row][column + 1].equals(String.valueOf(word.charAt(count + 1))) &&
+                    !passedCoordinates.contains(rightPair)) {
+                count++;
+                passedCoordinates.add(rightPair);
+                wordsSearch(finalResult, passedCoordinates, matrix, word, row, column, count, rows, columns);
+            }
+
+            if (checkOutOfIndex(row, column - 1, rows, columns) &&
+                    matrix[row][column - 1].equals(String.valueOf(word.charAt(count + 1))) &&
+                    !passedCoordinates.contains(leftPair)) {
+                count++;
+                passedCoordinates.add(leftPair);
+                wordsSearch(finalResult, passedCoordinates, matrix, word, row, column, count, rows, columns);
+            }
+
+            if (checkOutOfIndex(row - 1, column, rows, columns) &&
+                    matrix[row - 1][column].equals(String.valueOf(word.charAt(count + 1))) &&
+                    !passedCoordinates.contains(upPair)) {
+                count++;
+                passedCoordinates.add(upPair);
+                wordsSearch(finalResult, passedCoordinates, matrix, word, row, column, count, rows, columns);
+            }
+
+            if (checkOutOfIndex(row + 1, column, rows, columns) &&
+                    matrix[row][column + 1].equals(String.valueOf(word.charAt(count + 1))) &&
+                    !passedCoordinates.contains(downPair)) {
+                count++;
+                passedCoordinates.add(downPair);
+                wordsSearch(finalResult, passedCoordinates, matrix, word, row, column, count, rows, columns);
+            }
+        } else {
+            finalResult.add(word);
+        }
+    }
+
+    private static boolean checkOutOfIndex(int row, int column, int rows, int columns) {
+        return row <= rows - 1 && row > 0 && column <= columns - 1 && column > 0;
     }
 }

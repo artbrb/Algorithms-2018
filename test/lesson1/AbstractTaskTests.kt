@@ -114,6 +114,7 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         }
         testGeneratedTemperatures(10)
         testGeneratedTemperatures(500)
+        testGeneratedTemperatures(5000)
     }
 
     protected fun sortSequence(sortSequence: (String, String) -> Unit) {
@@ -146,6 +147,53 @@ abstract class AbstractTaskTests : AbstractFileTests() {
                         12
                         12
                         12
+                    """.trimIndent())
+        } finally {
+            File("temp.txt").delete()
+        }
+
+        try {
+            sortSequence("input/seq_in3.txt", "temp.txt")
+            assertFileContent("temp.txt",
+                    """
+                        37
+                        37
+                        37
+                        37
+                        37
+                        37
+                        37
+                        37
+                        37
+                    """.trimIndent())
+        } finally {
+            File("temp.txt").delete()
+        }
+
+        try {
+            sortSequence("input/seq_in4.txt", "temp.txt")
+            assertFileContent("temp.txt",
+                    """
+                        2
+                        3
+                        2
+                        3
+                        2
+                        3
+                        2
+                        3
+                        2
+                        3
+                        2
+                        2
+                        1
+                        1
+                        1
+                        1
+                        1
+                        1
+                        1
+                        1
                     """.trimIndent())
         } finally {
             File("temp.txt").delete()
@@ -199,6 +247,17 @@ abstract class AbstractTaskTests : AbstractFileTests() {
             File("temp_sequence.txt").delete()
             File("temp.txt").delete()
         }
+
+        try {
+            generateSequence(1000000, 300)
+            sortSequence("temp_sequence.txt", "temp.txt")
+            assertFileContent("temp.txt", File("temp_sequence_expected.txt").readLines().joinToString("\n"))
+        } finally {
+            File("temp_sequence_expected.txt").delete()
+            File("temp_sequence.txt").delete()
+            File("temp.txt").delete()
+        }
+
     }
 
     protected fun generateArrays(firstSize: Int, secondSize: Int): Triple<Array<Int>, Array<Int?>, Array<Int?>> {

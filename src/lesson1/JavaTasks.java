@@ -173,10 +173,50 @@ public class JavaTasks {
      * 2
      * 2
      */
-    static public void sortSequence(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortSequence(String inputName, String outputName) throws IOException {
+        String string;
+        Integer theMostFrequent = 0;
+        Integer numberOfRepetitions = 0;
+        List<Integer> numbersList = new ArrayList<>();
+        Map<Integer, Integer> numberCounting = new HashMap<>();
+        BufferedReader reader = new BufferedReader(new FileReader(inputName));
+
+        while((string = reader.readLine())!= null) {
+            numberCounting.put(Integer.valueOf(string), 0);
+            numbersList.add(Integer.valueOf(string));
+        }
+        reader.close();
+
+        for (Integer number: numbersList) {
+            numberCounting.put(number, numberCounting.get(number) + 1);
+        }
+
+        for (Map.Entry<Integer, Integer> entry: numberCounting.entrySet()) {
+            if ((entry.getKey() < theMostFrequent && entry.getValue() >= numberOfRepetitions)
+                    || (entry.getKey() > theMostFrequent && entry.getValue() > numberOfRepetitions)) {
+                theMostFrequent = entry.getKey();
+                numberOfRepetitions= entry.getValue();
+            }
+        }
+
+        FileWriter writer = new FileWriter(new File(outputName));
+        for (Integer aNumbersList : numbersList) {
+            if (!aNumbersList.equals(theMostFrequent)) {
+                writer.write(aNumbersList + "\n");
+            }
+        }
+
+        while (numberOfRepetitions != 0) {
+            writer.write(theMostFrequent + "\n");
+            numberOfRepetitions--;
+        }
+        writer.close();
     }
 
+    //Трудоёмкость:   O(n)
+    //Ресурсоёмкость: O(n + m)
+    //n - количество строк в входном файле
+    //m - количество элементов numberCounting
     /**
      * Соединить два отсортированных массива в один
      *
