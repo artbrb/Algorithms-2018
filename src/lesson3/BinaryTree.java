@@ -11,7 +11,7 @@ import java.util.*;
 public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implements CheckableSortedSet<T> {
 
     private static class Node<T> {
-        final T value;
+        T value;
 
         Node<T> left = null;
 
@@ -64,11 +64,60 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      * Удаление элемента в дереве
      * Средняя
      */
+
+    //Трудоёмкость:    O(n) n - высота дерева
+    //Ресурсоёмкость:  O(1)
+
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        if (root == null) {
+            return false;
+        } else {
+            size--;
+            root = removingOfNode(root, (T) o);
+            return true;
+        }
     }
+
+    public Node<T> removingOfNode(Node<T> root, T value) {
+        int comparison = value.compareTo(root.value);
+
+        if (size == 1) {
+            return null;
+        }
+
+        if (comparison > 0) {
+            root.right = removingOfNode(root.right, value);
+        } else if (comparison < 0) {
+            root.left = removingOfNode(root.left, value);
+        } else if (root.left != null && root.right != null) {
+
+            Node<T> node = new Node<>(minValueOfSubTree(root.right).value);
+            node.left = root.left;
+            node.right = root.right;
+            root = node;
+            root.right = removingOfNode(root.right, root.value);
+
+        } else if (root.left != null) {
+            root = root.left;
+        } else {
+            root = root.right;
+        }
+        return root;
+    }
+
+
+    public Node<T> minValueOfSubTree(Node<T> node) {
+        if (node.left == null) {
+            return node;
+        } else {
+            return minValueOfSubTree(node.left);
+        }
+    }
+
+
+
+
 
     @Override
     public boolean contains(Object o) {
@@ -77,6 +126,8 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         Node<T> closest = find(t);
         return closest != null && t.compareTo(closest.value) == 0;
     }
+
+
 
     private Node<T> find(T value) {
         if (root == null) return null;
@@ -99,29 +150,57 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     }
 
     public class BinaryTreeIterator implements Iterator<T> {
+        private Stack<Node<T>> stack = new Stack<>();
 
-        private Node<T> current = null;
+        private Node<T> current;
 
-        private BinaryTreeIterator() {}
+
+
+        private BinaryTreeIterator() {
+            current = root;
+
+            while (current != null) {
+
+                stack.push(current);
+                current = current.left;
+
+            }
+        }
 
         /**
          * Поиск следующего элемента
          * Средняя
          */
+        //Трудоёмкость:    O(n)
+        //Ресурсоёмкость:  O(n)
+        //     n - кол-во узлов
+
         private Node<T> findNext() {
-            // TODO
-            throw new NotImplementedError();
+            current = stack.pop();
+
+            return current;
         }
 
         @Override
         public boolean hasNext() {
-            return findNext() != null;
+            return !stack.empty();
         }
 
         @Override
         public T next() {
             current = findNext();
-            if (current == null) throw new NoSuchElementException();
+            if (current == null) {
+                throw new NoSuchElementException();
+            }
+
+            Node<T> update = current;
+            if (update.right != null) {
+                update = update.right;
+                while (update != null) {
+                    stack.push(update);
+                    update = update.left;
+                }
+            }
             return current.value;
         }
 
@@ -129,12 +208,17 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
          * Удаление следующего элемента
          * Сложная
          */
+        //Трудоёмкость:    O(n)
+        //Ресурсоёмкость:  O(1)
+
         @Override
         public void remove() {
-            // TODO
-            throw new NotImplementedError();
+            size--;
+            root = BinaryTree.this.removingOfNode(root, current.value);
         }
     }
+
+
 
     @NotNull
     @Override
