@@ -100,6 +100,11 @@ public class JavaDynamicTasks {
      *
      * Здесь ответ 2 + 3 + 4 + 1 + 2 = 12
      */
+
+    //Трудоёмкость:    O(n * m)
+    //Ресурсоёмкость:  O(n * m)
+    //     m, n - количество строк и столбцов во входной матрице
+
     public static int shortestPathOnField(String inputName) throws IOException {
         int columns;
         int rows = 0;
@@ -143,6 +148,8 @@ public class JavaDynamicTasks {
         }
         return numberMatrix[rows - 1][columns - 1];
     }
+
+
 
     // Задачу "Максимальное независимое множество вершин в графе без циклов"
     // смотрите в уроке 5
